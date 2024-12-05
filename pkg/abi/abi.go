@@ -141,8 +141,7 @@ func GetPaddedParam(param []Param) ([]byte, error) {
 						strSlice[i] = str
 					}
 					v = strSlice
-				} else if (ty.Elem.T == eABI.IntTy || ty.Elem.T == eABI.UintTy) &&
-					ty.Elem.Size > 64 {
+				} else if ty.Elem.T == eABI.IntTy || ty.Elem.T == eABI.UintTy {
 					tmp := make([]*big.Int, 0)
 					tmpSlice, ok := v.([]interface{})
 					if !ok {
