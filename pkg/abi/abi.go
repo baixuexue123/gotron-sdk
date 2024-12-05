@@ -127,12 +127,24 @@ func GetPaddedParam(param []Param) ([]byte, error) {
 						}
 						v = append(v.([]eCommon.Address), addr)
 					}
-				}
-
-				if (ty.Elem.T == eABI.IntTy || ty.Elem.T == eABI.UintTy) &&
+				} else if ty.Elem.T == eABI.StringTy {
+					tmp, ok := v.([]interface{})
+					if !ok {
+						return nil, fmt.Errorf("unable to convert array of strings %+v", p)
+					}
+					strSlice := make([]string, len(tmp))
+					for i, v := range tmp {
+						str, ok := v.(string)
+						if !ok {
+							return nil, fmt.Errorf("unable to convert array of unints %+v", p)
+						}
+						strSlice[i] = str
+					}
+					v = strSlice
+				} else if (ty.Elem.T == eABI.IntTy || ty.Elem.T == eABI.UintTy) &&
 					ty.Elem.Size > 64 {
 					tmp := make([]*big.Int, 0)
-					tmpSlice, ok := v.([]any)
+					tmpSlice, ok := v.([]interface{})
 					if !ok {
 						return nil, fmt.Errorf("unable to convert array of unints %+v", p)
 					}
